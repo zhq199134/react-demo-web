@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { adminRouter } from "./routes";
-
+import { Frame } from "./components";
+const menus = adminRouter.filter(s => s.isNav === true);
 //定义高阶组件
 // const testHOC = Wappedcomponent => {
 //   return class HOCComponent extends Component {
@@ -19,8 +20,7 @@ import { adminRouter } from "./routes";
 class App extends Component {
   render() {
     return (
-      <div>
-        <div>这里是公共的部分</div>
+      <Frame menus={menus}>
         <Switch>
           {adminRouter.map(route => {
             return (
@@ -37,7 +37,7 @@ class App extends Component {
           <Redirect to={adminRouter[0].pathname} from="/admin" exact />
           <Redirect to="/404" />
         </Switch>
-      </div>
+      </Frame>
     );
   }
 }
