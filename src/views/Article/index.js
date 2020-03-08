@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
 import XLSX from 'xlsx'
-import { Card, Button, Table, Tag, Modal, Typography, message } from 'antd'
+import {
+  Card,
+  Button,
+  Table,
+  Tag,
+  Modal,
+  Typography,
+  message,
+  Tooltip
+} from 'antd'
 import { getArticles, deleteArticle as deleteArticleById } from '../../services'
 import moment from 'moment'
 const titleDisplayMap = {
@@ -26,6 +35,15 @@ export default class ArticleList extends Component {
       deleteArticleID: null
     }
   }
+  toEdit = id => {
+    // this.props.history.push({
+    //   pathname: `/admin/artical/edit/${record.id}`,
+    //   state: {
+    //     title: record.title
+    //   }
+    // })
+    this.props.history.push(`/admin/artical/edit/${id}`)
+  }
   createDisplayColumns = columnkeys => {
     const columns = columnkeys.map(item => {
       if (item === 'amount')
@@ -34,7 +52,13 @@ export default class ArticleList extends Component {
           key: item,
           render: (text, record) => {
             const { amount } = record
-            return <Tag color={amount > 200 ? 'red' : 'green'}>{amount}</Tag>
+            return (
+              <Tooltip
+                title={amount > 200 ? '超过200阅读量' : '未超过200阅读量'}
+              >
+                <Tag color={amount > 200 ? 'red' : 'green'}>{amount}</Tag>
+              </Tooltip>
+            )
           }
         }
       if (item === 'createAt') {
@@ -59,7 +83,11 @@ export default class ArticleList extends Component {
       render: record => {
         return (
           <>
-            <Button size="small" type="primary">
+            <Button
+              size="small"
+              type="primary"
+              onClick={this.toEdit.bind(this, record.id)}
+            >
               编辑
             </Button>
             <Button
