@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import XLSX from 'xlsx'
-import { Card, Button, Table, Tag } from 'antd'
-import { getArticles } from '../../services'
+import { Card, Button, Table, Tag, Modal, Typography, message } from 'antd'
+import { getArticles, deleteArticle as deleteArticleById } from '../../services'
 import moment from 'moment'
 const titleDisplayMap = {
   id: '序号',
@@ -19,7 +19,11 @@ export default class ArticleList extends Component {
       total: 0,
       isLoading: false,
       offset: 0,
-      limited: 10
+      limited: 10,
+      deleteArticleTitle: null,
+      isShowArticleModal: false,
+      deleteArticleConfimLoading: false,
+      deleteArticleID: null
     }
   }
   createDisplayColumns = columnkeys => {
@@ -52,13 +56,17 @@ export default class ArticleList extends Component {
     columns.push({
       title: '操作',
       key: 'action',
-      render: () => {
+      render: record => {
         return (
           <>
             <Button size="small" type="primary">
               编辑
             </Button>
-            <Button size="small" type="danger">
+            <Button
+              size="small"
+              type="danger"
+              onClick={this.showDeleteArticleModel.bind(this, record)}
+            >
               删除
             </Button>
           </>
@@ -66,6 +74,53 @@ export default class ArticleList extends Component {
       }
     })
     return columns
+  }
+  showDeleteArticleModel = record => {
+    // Modal.confirm({
+    //   title: '此操作不可逆，请谨慎！！！',
+    //   content: (
+    //     <Typography>
+    //       确定要删除<span style={{ color: '#f00' }}>{record.title}</span>吗？
+    //     </Typography>
+    //   ),
+    //   onOk() {
+    //     deleteArticle(record.id).then(res => {
+    //       console.log(res)
+    //     })
+    //   }
+    // })
+    this.setState({
+      isShowArticleModal: true,
+      deleteArticleTitle: record.title,
+      deleteArticleConfimLoading: false,
+      deleteArticleID: record.id
+    })
+  }
+  deleteArticle = () => {
+    this.setState({
+      deleteArticleConfimLoading: true
+    })
+    deleteArticleById(this.state.deleteArticleID)
+      .then(res => {
+        message.success(res.msg)
+        this.setState(
+          {
+            offset: 0
+          },
+          () => {
+            this.getArticleList()
+          }
+        )
+      })
+      .catch(err => {
+        //处理错误
+      })
+      .finally(() => {
+        this.setState({
+          deleteArticleConfimLoading: false,
+          isShowArticleModal: false
+        })
+      })
   }
   getArticleList = () => {
     this.setState({
@@ -134,6 +189,12 @@ export default class ArticleList extends Component {
     /* generate XLSX file and send to client */
     XLSX.writeFile(wb, 'sheetjs.xlsx')
   }
+  hideDeleteModal = () => {
+    this.setState({
+      isShowArticleModal: false,
+      deleteArticleTitle: ''
+    })
+  }
   componentDidMount() {
     this.getArticleList()
   }
@@ -161,6 +222,22 @@ export default class ArticleList extends Component {
             pageSizeOptions: ['10', '50', '100', '200']
           }}
         />
+        <Modal
+          title="此操作不可逆，请谨慎！！"
+          visible={this.state.isShowArticleModal}
+          onCancel={this.hideDeleteModal}
+          maskClosable={false}
+          confirmLoading={this.state.deleteArticleConfimLoading}
+          onOk={this.deleteArticle}
+        >
+          <Typography>
+            确定要删除
+            <span style={{ color: '#f00' }}>
+              {this.state.deleteArticleTitle}
+            </span>
+            吗？
+          </Typography>
+        </Modal>
       </Card>
     )
   }
