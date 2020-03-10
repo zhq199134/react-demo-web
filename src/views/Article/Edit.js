@@ -1,5 +1,7 @@
 import React, { Component, createRef } from 'react'
 import { Form, Input, Card, Button, DatePicker } from 'antd'
+import E from 'wangeditor'
+import './edit.less'
 const formItemLayout = {
   labelCol: {
     span: 4
@@ -11,6 +13,7 @@ const formItemLayout = {
 const tailLayout = {
   wrapperCol: { offset: 4, span: 16 }
 }
+
 class ArticleEdit extends Component {
   constructor() {
     super()
@@ -18,11 +21,34 @@ class ArticleEdit extends Component {
     //   titleValidtorStatus: '',
     //   titleHelp: ''
     // }
+    this.editorRef = createRef()
+    this.formRef = createRef()
   }
-  formRef = createRef()
 
+  initEditor = () => {
+    // React.useEffect(() => {
+    //   form.setFieldsValue({
+    //     username: 'Bamboo'
+    //   })
+    // }, [form])
+
+    this.editor = new E(this.editorRef.current)
+    // html 即变化之后的内容
+    this.editor.customConfig.onchange = html => {
+      this.formRef.current.setFieldsValue({
+        content: html
+      })
+    }
+    this.editor.create()
+  }
+  componentDidMount() {
+    this.initEditor()
+  }
   onOk(value) {
     console.log('onOk: ', value)
+  }
+  onFinish = values => {
+    console.log('Received values of form: ', values)
   }
   render() {
     return (
@@ -37,7 +63,7 @@ class ArticleEdit extends Component {
               {
                 required: true,
                 message: '文章标题不能为空'
-                /*自定义校验规则 */
+                //#region 这是自定义校验规则
                 // validator: (rule, value, callback) => {
                 //   try {
                 //     if (value !== '123') {
@@ -56,6 +82,7 @@ class ArticleEdit extends Component {
                 //     callback(err)
                 //   }
                 // }
+                //#region
               }
             ]}
           >
@@ -107,7 +134,7 @@ class ArticleEdit extends Component {
               }
             ]}
           >
-            <div>这里是内容</div>
+            <div className="qf-editor" ref={this.editorRef}></div>
           </Form.Item>
           <Form.Item {...tailLayout}>
             <Button type="primary" htmlType="submit">
