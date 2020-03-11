@@ -31,3 +31,11 @@ export const getArticles = (offset = 0, limited = 10) => {
 export const deleteArticle = id => {
   return service.post(`/api/v1/deleteArticle/:${id}`)
 }
+//根据id获取文章
+export const getArticleById = id => {
+  return service.post(`/api/v1/article/:${id}`)
+}
+//保存文章
+export const saveArticle = (id, data) => {
+  return service.post(`/api/v1/articleEdit/:id`, data)
+}

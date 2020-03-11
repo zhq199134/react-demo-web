@@ -42,7 +42,7 @@ export default class ArticleList extends Component {
     //     title: record.title
     //   }
     // })
-    this.props.history.push(`/admin/artical/edit/${id}`)
+    this.props.history.push(`/admin/article/edit/${id}`)
   }
   createDisplayColumns = columnkeys => {
     const columns = columnkeys.map(item => {

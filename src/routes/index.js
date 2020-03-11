@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react'
 import {
   DashboardOutlined,
   UnorderedListOutlined,
   SettingOutlined,
   EditOutlined
-} from "@ant-design/icons";
+} from '@ant-design/icons'
 import {
   Login,
   ArticleList,
@@ -12,44 +12,44 @@ import {
   Dashboard,
   Settings,
   NotFound
-} from "../views";
+} from '../views'
 export const mainRouter = [
   {
-    pathname: "/login",
+    pathname: '/login',
     component: Login
   },
   {
-    pathname: "/404",
+    pathname: '/404',
     component: NotFound
   }
-];
+]
 export const adminRouter = [
   {
-    pathname: "/admin/dashboard",
+    pathname: '/admin/dashboard',
     component: Dashboard,
-    title: "仪表盘",
+    title: '仪表盘',
     icon: <DashboardOutlined />,
     isNav: true
   },
   {
-    pathname: "/admin/artical",
+    pathname: '/admin/article',
     component: ArticleList,
-    title: "文章列表",
+    title: '文章列表',
     isNav: true,
     icon: <UnorderedListOutlined />,
     exact: true
   },
   {
-    pathname: "/admin/artical/edit/:id",
+    pathname: '/admin/article/edit/:id',
     component: ArticleEdit,
-    title: "文章编辑",
+    title: '文章编辑',
     icon: <EditOutlined />
   },
   {
-    pathname: "/admin/settings",
+    pathname: '/admin/settings',
     component: Settings,
-    title: "设置",
+    title: '设置',
     icon: <SettingOutlined />,
     isNav: true
   }
-];
+]

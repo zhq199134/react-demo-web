@@ -1,7 +1,9 @@
 import React, { Component, createRef } from 'react'
-import { Form, Input, Card, Button, DatePicker } from 'antd'
+import { Form, Input, Card, Button, DatePicker, Spin, message } from 'antd'
 import E from 'wangeditor'
 import './edit.less'
+import moment from 'moment'
+import { getArticleById, saveArticle } from '../../services'
 const formItemLayout = {
   labelCol: {
     span: 4
@@ -17,21 +19,14 @@ const tailLayout = {
 class ArticleEdit extends Component {
   constructor() {
     super()
-    // this.state = {
-    //   titleValidtorStatus: '',
-    //   titleHelp: ''
-    // }
     this.editorRef = createRef()
     this.formRef = createRef()
+    this.state = {
+      isLoading: false
+    }
   }
 
   initEditor = () => {
-    // React.useEffect(() => {
-    //   form.setFieldsValue({
-    //     username: 'Bamboo'
-    //   })
-    // }, [form])
-
     this.editor = new E(this.editorRef.current)
     // html 即变化之后的内容
     this.editor.customConfig.onchange = html => {
@@ -43,105 +38,119 @@ class ArticleEdit extends Component {
   }
   componentDidMount() {
     this.initEditor()
+    this.setState({
+      isLoading: true
+    })
+    getArticleById(this.props.match.params.id)
+      .then(res => {
+        //设置页面数据
+        //*****通过结构将res分解为id和其他的两个对象******//
+        const { id, ...data } = res
+        data.createAt = moment(data.createAt)
+        this.formRef.current.setFieldsValue(data)
+        this.editor.txt.html(data.content)
+      })
+      .finally(() => {
+        this.setState({
+          isLoading: false
+        })
+      })
   }
-  onOk(value) {
-    console.log('onOk: ', value)
-  }
+
   onFinish = values => {
-    console.log('Received values of form: ', values)
+    const data = Object.assign({}, values, {
+      createAt: values.createAt.valueOf()
+    })
+    this.setState({
+      isLoading: true
+    })
+    saveArticle(this.props.match.params.id, data)
+      .then(res => {
+        message.success(res.msg)
+        this.props.history.push('/admin/article')
+      })
+      .finally(() => {
+        this.setState({
+          isLoading: false
+        })
+      })
   }
   render() {
     return (
-      <Card title="编辑文章" bordered={false} extra={<Button>取消</Button>}>
-        <Form {...formItemLayout} ref={this.formRef} onFinish={this.onFinish}>
-          <Form.Item
-            name="title"
-            label="文章标题"
-            // validateStatus={this.state.titleValidtorStatus}
-            // help={this.state.titleHelp}
-            rules={[
-              {
-                required: true,
-                message: '文章标题不能为空'
-                //#region 这是自定义校验规则
-                // validator: (rule, value, callback) => {
-                //   try {
-                //     if (value !== '123') {
-                //       this.setState({
-                //         titleValidtorStatus: 'error',
-                //         titleHelp: '标题不能为空'
-                //       })
-                //     } else {
-                //       this.setState({
-                //         titleValidtorStatus: '',
-                //         titleHelp: ''
-                //       })
-                //     }
-                //     callback()
-                //   } catch (err) {
-                //     callback(err)
-                //   }
-                // }
-                //#region
-              }
-            ]}
-          >
-            <Input placeholder="标题" />
-          </Form.Item>
-          <Form.Item
-            name="author"
-            label="文章作者"
-            rules={[
-              {
-                required: true,
-                message: '文章作者不能为空'
-              }
-            ]}
-          >
-            <Input placeholder="admin" />
-          </Form.Item>
-          <Form.Item
-            name="amount"
-            label="文章阅读量"
-            rules={[
-              {
-                required: true,
-                message: '文章阅读量不能为空'
-              }
-            ]}
-          >
-            <Input placeholder="0" />
-          </Form.Item>
-          <Form.Item
-            name="createAt"
-            label="创建时间"
-            rules={[
-              {
-                required: true,
-                message: '创建时间不能为空'
-              }
-            ]}
-          >
-            <DatePicker showTime placeholder="请选择时间" />
-          </Form.Item>
-          <Form.Item
-            name="content"
-            label="文章内容"
-            rules={[
-              {
-                required: true,
-                message: '文章内容不能为空'
-              }
-            ]}
-          >
-            <div className="qf-editor" ref={this.editorRef}></div>
-          </Form.Item>
-          <Form.Item {...tailLayout}>
-            <Button type="primary" htmlType="submit">
-              保存
-            </Button>
-          </Form.Item>
-        </Form>
+      <Card
+        title="编辑文章"
+        bordered={false}
+        extra={<Button onClick={this.props.history.goBack}>取消</Button>}
+      >
+        <Spin spinning={this.state.isLoading}>
+          <Form {...formItemLayout} ref={this.formRef} onFinish={this.onFinish}>
+            <Form.Item
+              name="title"
+              label="文章标题"
+              rules={[
+                {
+                  required: true,
+                  message: '文章标题不能为空'
+                }
+              ]}
+            >
+              <Input placeholder="标题" />
+            </Form.Item>
+            <Form.Item
+              name="author"
+              label="文章作者"
+              rules={[
+                {
+                  required: true,
+                  message: '文章作者不能为空'
+                }
+              ]}
+            >
+              <Input placeholder="admin" />
+            </Form.Item>
+            <Form.Item
+              name="amount"
+              label="文章阅读量"
+              rules={[
+                {
+                  required: true,
+                  message: '文章阅读量不能为空'
+                }
+              ]}
+            >
+              <Input placeholder="0" />
+            </Form.Item>
+            <Form.Item
+              name="createAt"
+              label="创建时间"
+              rules={[
+                {
+                  required: true,
+                  message: '创建时间不能为空'
+                }
+              ]}
+            >
+              <DatePicker showTime placeholder="请选择时间" />
+            </Form.Item>
+            <Form.Item
+              name="content"
+              label="文章内容"
+              rules={[
+                {
+                  required: true,
+                  message: '文章内容不能为空'
+                }
+              ]}
+            >
+              <div className="qf-editor" ref={this.editorRef}></div>
+            </Form.Item>
+            <Form.Item {...tailLayout}>
+              <Button type="primary" htmlType="submit">
+                保存
+              </Button>
+            </Form.Item>
+          </Form>
+        </Spin>
       </Card>
     )
   }
