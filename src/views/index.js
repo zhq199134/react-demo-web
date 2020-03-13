@@ -1,30 +1,42 @@
-import Loadable from "react-loadable";
+import Loadable from 'react-loadable'
 //这是一个简易的react-loadable的原理
 // import Loadable from "./loadable";
-import { Loading } from "../components";
+import { Loading } from '../components'
 //下面是懒加载路由
 const Dashboard = Loadable({
-  loader: () => import("./Dashboard"),
+  loader: () => import('./Dashboard'),
   loading: Loading
-});
+})
 const ArticleList = Loadable({
-  loader: () => import("./Article"),
+  loader: () => import('./Article'),
   loading: Loading
-});
+})
 const ArticleEdit = Loadable({
-  loader: () => import("./Article/Edit"),
+  loader: () => import('./Article/Edit'),
   loading: Loading
-});
+})
 const Login = Loadable({
-  loader: () => import("./Login"),
+  loader: () => import('./Login'),
   loading: Loading
-});
+})
 const NotFound = Loadable({
-  loader: () => import("./NotFound"),
+  loader: () => import('./NotFound'),
   loading: Loading
-});
+})
 const Settings = Loadable({
-  loader: () => import("./Settings"),
+  loader: () => import('./Settings'),
   loading: Loading
-});
-export { ArticleList, ArticleEdit, Login, Dashboard, NotFound, Settings };
+})
+const Notifications = Loadable({
+  loader: () => import('./Notifications'),
+  loading: Loading
+})
+export {
+  ArticleList,
+  ArticleEdit,
+  Login,
+  Dashboard,
+  NotFound,
+  Settings,
+  Notifications
+}

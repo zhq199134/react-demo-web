@@ -11,7 +11,8 @@ import {
   ArticleEdit,
   Dashboard,
   Settings,
-  NotFound
+  NotFound,
+  Notifications
 } from '../views'
 export const mainRouter = [
   {
@@ -42,6 +43,12 @@ export const adminRouter = [
   {
     pathname: '/admin/article/edit/:id',
     component: ArticleEdit,
+    title: '文章编辑',
+    icon: <EditOutlined />
+  },
+  {
+    pathname: '/admin/notifications',
+    component: Notifications,
     title: '文章编辑',
     icon: <EditOutlined />
   },
