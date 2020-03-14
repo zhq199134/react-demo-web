@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { getAllNotifications } from '../../actions/notifications'
 import { Layout, Menu, Dropdown, Avatar, Badge } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import logo from './logo.png'
@@ -14,7 +15,9 @@ const mapState = state => {
     ).length
   }
 }
-@connect(mapState)
+@connect(mapState, {
+  getAllNotifications
+})
 @withRouter
 class Frame extends Component {
   menuOnclick = ({ key }) => {
@@ -23,7 +26,7 @@ class Frame extends Component {
   dropdownMenuClick = ({ key }) => {
     this.props.history.push(key)
   }
-  menu = (
+  showDropDown = () => (
     <Menu onClick={this.dropdownMenuClick}>
       <Menu.Item key="/admin/notifications">
         <Badge dot={Boolean(this.props.notificationsCount)}>通知中心</Badge>
@@ -32,9 +35,10 @@ class Frame extends Component {
       <Menu.Item key="/login">退出登录</Menu.Item>
     </Menu>
   )
+  componentDidMount() {
+    this.props.getAllNotifications()
+  }
   render() {
-    console.log(this.props)
-
     const selectedKeysArr = this.props.location.pathname.split('/')
     selectedKeysArr.length = 3
 
@@ -45,7 +49,7 @@ class Frame extends Component {
             <img src={logo} alt="QFADMIN"></img>
           </div>
           <div>
-            <Dropdown overlay={this.menu}>
+            <Dropdown overlay={this.showDropDown()}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                 <span>欢迎您！张虎强</span>
