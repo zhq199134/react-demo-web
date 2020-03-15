@@ -20,10 +20,16 @@ render(
         <Switch>
           <Route
             path="/admin"
-            render={routerProps => {
-              //TODO:权限认证 需要登录才能访问admin
-              return <App {...routerProps}></App>
-            }}
+            //   render={routerProps => {
+            //     //TODO:权限认证 需要登录才能访问admin
+            //     return store.getState().user.isLogin ? (
+            //       <App {...routerProps}></App>
+            //     ) : (
+            //       <Redirect to="/login" />
+            //     )
+            //   }
+            // }
+            component={App}
           ></Route>
           {mainRouter.map(route => {
             return (

@@ -27,8 +27,6 @@ export const markAllNotificationsAsRead = () => dispatch => {
 export const getAllNotifications = () => dispatch => {
   dispatch(startLoading())
   getNotifications().then(res => {
-    console.log(res.list)
-
     dispatch({
       type: actionTypes.GET_ALL_NOTIFICATIONS,
       payload: {

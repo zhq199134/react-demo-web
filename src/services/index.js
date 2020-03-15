@@ -1,7 +1,12 @@
 import axios from 'axios'
 import { message } from 'antd'
 const isDev = process.env.NODE_ENV === 'development'
+//有拦截
 const service = axios.create({
+  baseURL: isDev ? 'http://rap2.taobao.org:38080/app/mock/246244' : ''
+})
+//无拦截
+const http = axios.create({
   baseURL: isDev ? 'http://rap2.taobao.org:38080/app/mock/246244' : ''
 })
 
@@ -46,4 +51,8 @@ export const getArticleAmount = () => {
 //获取通知列表
 export const getNotifications = () => {
   return service.post('/api/v1/notifications')
+}
+//登录
+export const loginHttp = user => {
+  return http.post('/api/v1/login', user)
 }
