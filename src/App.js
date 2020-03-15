@@ -19,7 +19,8 @@ const menus = adminRouter.filter(s => s.isNav === true)
 // };
 // @testHOC
 @connect(state => ({
-  isLogin: state.user.isLogin
+  isLogin: state.user.isLogin,
+  role: state.user.role
 }))
 class App extends Component {
   render() {
@@ -33,7 +34,9 @@ class App extends Component {
                 path={route.pathname}
                 exact={route.exact}
                 render={routeProps => {
-                  return <route.component {...routeProps} />
+                  const hasPermission = route.roles.includes(this.props.role)
+               
+                  return hasPermission? <route.component {...routeProps} />:<Redirect to="/admin/noauth"/>
                 }}
               />
             )

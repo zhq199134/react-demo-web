@@ -12,7 +12,8 @@ import {
   Dashboard,
   Settings,
   NotFound,
-  Notifications
+  Notifications,
+  NoAuth
 } from '../views'
 export const mainRouter = [
   {
@@ -30,7 +31,8 @@ export const adminRouter = [
     component: Dashboard,
     title: '仪表盘',
     icon: <DashboardOutlined />,
-    isNav: true
+    isNav: true,
+    roles: ['001', '002', '003']
   },
   {
     pathname: '/admin/article',
@@ -38,25 +40,36 @@ export const adminRouter = [
     title: '文章列表',
     isNav: true,
     icon: <UnorderedListOutlined />,
-    exact: true
+    exact: true,
+    roles: ['001', '002']
   },
   {
     pathname: '/admin/article/edit/:id',
     component: ArticleEdit,
     title: '文章编辑',
-    icon: <EditOutlined />
+    icon: <EditOutlined />,
+    roles: ['001', '002']
   },
   {
     pathname: '/admin/notifications',
     component: Notifications,
     title: '文章编辑',
-    icon: <EditOutlined />
+    icon: <EditOutlined />,
+    roles: ['001', '002', '003']
   },
   {
     pathname: '/admin/settings',
     component: Settings,
     title: '设置',
     icon: <SettingOutlined />,
-    isNav: true
+    isNav: true,
+    roles: ['001']
+  },
+  {
+    pathname: '/admin/noauth',
+    component: NoAuth,
+    title: '无权限',
+    icon: <SettingOutlined />,
+    roles: ['001', '002', '003']
   }
 ]
