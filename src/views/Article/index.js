@@ -158,6 +158,8 @@ export default class ArticleList extends Component {
       .then(res => {
         const columnkeys = Object.keys(res.list[0])
         const columns = this.createDisplayColumns(columnkeys)
+        //如果组件没有挂载 则返回
+        if (!this.updater.isMounted(this)) return
         this.setState({
           total: res.total,
           dataSource: res.list,
@@ -168,6 +170,8 @@ export default class ArticleList extends Component {
         //处理错误
       })
       .finally(() => {
+        //如果组件没有挂载 则返回
+        if (!this.updater.isMounted(this)) return
         this.setState({
           isLoading: false
         })
@@ -226,6 +230,7 @@ export default class ArticleList extends Component {
   componentDidMount() {
     this.getArticleList()
   }
+  componentWillMount() {}
 
   render() {
     return (

@@ -13,7 +13,8 @@ import {
   Settings,
   NotFound,
   Notifications,
-  NoAuth
+  NoAuth,
+  Profile
 } from '../views'
 export const mainRouter = [
   {
@@ -69,6 +70,13 @@ export const adminRouter = [
     pathname: '/admin/noauth',
     component: NoAuth,
     title: '无权限',
+    icon: <SettingOutlined />,
+    roles: ['001', '002', '003']
+  },
+  {
+    pathname: '/admin/profile',
+    component: Profile,
+    title: '个人设置',
     icon: <SettingOutlined />,
     roles: ['001', '002', '003']
   }

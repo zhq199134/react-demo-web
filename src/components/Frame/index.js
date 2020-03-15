@@ -39,7 +39,7 @@ class Frame extends Component {
       <Menu.Item key="/admin/notifications">
         <Badge dot={Boolean(this.props.notificationsCount)}>通知中心</Badge>
       </Menu.Item>
-      <Menu.Item key="/admin/settings">个人设置</Menu.Item>
+      <Menu.Item key="/admin/profile">个人设置</Menu.Item>
       <Menu.Item key="/logout">退出登录</Menu.Item>
     </Menu>
   )
