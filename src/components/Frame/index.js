@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getAllNotifications } from '../../actions/notifications'
+import { logout } from '../../actions/user'
 import { Layout, Menu, Dropdown, Avatar, Badge } from 'antd'
 import { DownOutlined } from '@ant-design/icons'
 import logo from './logo.png'
@@ -12,11 +13,14 @@ const mapState = state => {
   return {
     notificationsCount: state.notifications.list.filter(
       s => s.hasRead === false
-    ).length
+    ).length,
+    avatar: state.user.avatar,
+    displayName: state.user.displayName
   }
 }
 @connect(mapState, {
-  getAllNotifications
+  getAllNotifications,
+  logout
 })
 @withRouter
 class Frame extends Component {
@@ -24,7 +28,11 @@ class Frame extends Component {
     this.props.history.push(key)
   }
   dropdownMenuClick = ({ key }) => {
-    this.props.history.push(key)
+    if (key === '/logout') {
+      this.props.logout()
+    } else {
+      this.props.history.push(key)
+    }
   }
   showDropDown = () => (
     <Menu onClick={this.dropdownMenuClick}>
@@ -32,7 +40,7 @@ class Frame extends Component {
         <Badge dot={Boolean(this.props.notificationsCount)}>通知中心</Badge>
       </Menu.Item>
       <Menu.Item key="/admin/settings">个人设置</Menu.Item>
-      <Menu.Item key="/login">退出登录</Menu.Item>
+      <Menu.Item key="/logout">退出登录</Menu.Item>
     </Menu>
   )
   componentDidMount() {
@@ -51,8 +59,8 @@ class Frame extends Component {
           <div>
             <Dropdown overlay={this.showDropDown()}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                <span>欢迎您！张虎强</span>
+                <Avatar src={this.props.avatar} />
+                <span>欢迎您！{this.props.displayName}</span>
                 <Badge
                   count={this.props.notificationsCount}
                   offset={[-10, -10]}
