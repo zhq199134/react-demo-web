@@ -35,3 +35,11 @@ export const login = user => dispatch => {
     }
   })
 }
+export const changeAvatar = avatar => {
+  return {
+    type: actionType.CHANGE_AVATAR,
+    payload: {
+      avatar
+    }
+  }
+}
